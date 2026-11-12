@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bengkel DES · Simulasi Kejadian Diskrit</title>
+<meta name="description" content="Simulasi kejadian diskrit sistem bengkel 2 montir: animasi, grafik, dan hitung manual.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('th')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}</script>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">🔧</span><div><b>Bengkel DES</b><small>Pemodelan dan Simulasi · TA-05</small></div></div>
+  <nav><button data-tab="simulasi">Ringkasan</button><button data-tab="animasi">Animasi</button><button data-tab="grafik">Grafik</button><button data-tab="manual">Hitung Manual</button></nav>
+  <button id="th" class="ico" title="Ganti tema" aria-label="Ganti tema">◐</button>
+</header>
+
+<section class="hero">
+  <h1>Satu bengkel, dua montir, <span>disimulasikan kejadian demi kejadian</span></h1>
+  <p>Mobil datang, mendaftar, menunggu montir yang bebas, diperbaiki, lalu membayar. Geser parameter di kiri dan lihat dampaknya pada antrian secara langsung.</p>
+  <div class="chips"><span>Event calendar</span><span>Simulation clock</span><span>Antrian FIFO</span><span>2 montir paralel</span></div>
+</section>
+
+<div class="layout">
+  <aside class="side card">
+    <h3>Parameter</h3>
+    <label><span>Antar-kedatangan <output id="oIat">20</output> menit</span><input id="iat" type="range" min="5" max="40" value="20"></label>
+    <label><span>Lama simulasi <output id="oT">480</output> menit</span><input id="T" type="range" min="120" max="1440" step="60" value="480"></label>
+    <label><span>Replikasi <output id="oRep">1</output>×</span><input id="rep" type="range" min="1" max="100" value="1"></label>
+    <label><span>Seed acak</span><div class="inl"><input id="seed" type="number" value="42"><button id="rnd" class="g" type="button">Acak</button></div></label>
+    <p class="note">Tetap: pendaftaran Uniform 2–4, perbaikan Triangular 20/30/40, pembayaran Uniform 2–4 (menit). Seed sama menghasilkan hasil sama.</p>
+  </aside>
+
+  <main>
+    <h2 class="sec">Hasil <span id="mode"></span></h2>
+    <div id="kpi" class="kpis"></div>
+
+    <nav class="tabs" aria-label="Bagian"><button data-tab="simulasi">Ringkasan</button><button data-tab="animasi">Animasi</button><button data-tab="grafik">Grafik</button><button data-tab="manual">Hitung Manual</button></nav>
+
+    <section id="p-simulasi" class="panel">
+      <div class="card"><h3>Utilisasi server</h3><div id="meters"></div><p class="note">Garis putih tipis pada batang menandai hasil JaamSim (1 run).</p></div>
+      <div class="card wrap"><h3>Perbandingan dengan JaamSim</h3><table id="cmp"></table>
+      <p class="note">JaamSim: 1 kali run 8 jam. Generator angka acak berbeda, jadi hanya sebanding secara statistik. Naikkan replikasi untuk rata-rata yang stabil.</p></div>
+    </section>
+
+    <section id="p-animasi" class="panel" hidden>
+      <div class="card"><canvas id="cv" width="900" height="340"></canvas>
+        <div class="ctl"><button id="pl" type="button">⏸ Jeda</button><button id="rs" type="button" class="g">↺ Ulang</button>
+        <div id="spd" class="seg"><button data-v="30">30×</button><button data-v="60" class="on">60×</button><button data-v="120">120×</button><button data-v="300">300×</button></div><span id="clk" class="k"></span></div>
+        <div class="legend"><i style="--c:var(--yel)"></i>antri/mendaftar <i style="--c:var(--red)"></i>menunggu montir <i style="--c:var(--blue)"></i>diperbaiki <i style="--c:var(--grn)"></i>antri/bayar</div>
+      </div>
+      <div class="card"><h3>Kejadian terbaru</h3><ul id="lg" class="log"></ul></div>
+    </section>
+
+    <section id="p-grafik" class="panel" hidden>
+      <div class="cols"><div class="card"><h3>Utilisasi server (%)</h3><div id="g1"></div></div>
+      <div class="card"><h3>Antrian Ruang Tunggu terhadap waktu</h3><div id="g2"></div></div>
+      <div class="card" id="g3c" hidden><h3>Mobil selesai per replikasi</h3><div id="g3"></div></div></div>
+    </section>
+
+    <section id="p-manual" class="panel" hidden>
+      <div class="card"><h3>Hitung manual (hand simulation)</h3>
+      <p class="note">Isi data tiap mobil (menit). Antar-kedatangan mobil 1 adalah waktu kedatangannya. Tabel menelusuri clock, antrian L(t), status montir, dan event calendar seperti simulasi manual di modul.</p>
+      <div class="wrap"><table id="mi"></table></div>
+      <div class="ctl"><button id="mc" type="button">Hitung manual</button></div>
+      <div class="wrap"><table id="mt"></table></div><pre id="mf"></pre></div>
+    </section>
+  </main>
+</div>
+<footer>Rizki Hasan Fauzi · 301240071 · Teknik Informatika, UNIBBA</footer>
+<script src="js/engine.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
